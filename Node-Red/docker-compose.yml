@@ -1,0 +1,10 @@
+name: node-red
+services:
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    volumes:
+      - /opt/nodered/data:/data
