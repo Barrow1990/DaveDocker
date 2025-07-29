@@ -1,9 +1,3 @@
-services:
-  portainer:
-    extends:
-      file: ./Portainer/docker-compose.yml
-      service: portainer
-  node-red:
-    extends:
-      file: ./Node-Red/docker-compose.yml
-      service: node-red
+include:
+  - ./Portainer/docker-compose.yml
+  - ./Node-Red/docker-compose.yml
