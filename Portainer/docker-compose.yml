@@ -8,5 +8,5 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/portainer/data:/data
+      - $BASE_PATH/portainer/data:/data
     image: portainer/portainer-ce:lts

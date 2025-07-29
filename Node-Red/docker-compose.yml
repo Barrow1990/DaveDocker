@@ -5,8 +5,8 @@ services:
     image: nodered/node-red:latest
     environment:
       - TZ=Europe/London
-    user: root:root
+    user: $USER
     ports:
       - "1880:1880"
     volumes:
-      - /opt/nodered/data:/data
+      - $BASE_PATH/nodered/data:/data
