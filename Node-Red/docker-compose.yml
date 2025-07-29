@@ -5,6 +5,7 @@ services:
     image: nodered/node-red:latest
     environment:
       - TZ=Europe/London
+    user: root:root
     ports:
       - "1880:1880"
     volumes:
