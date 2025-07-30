@@ -7,15 +7,15 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.services.portainer.loadbalancer.server.port=1880
-      - traefik.http.routers.portainer.service=nodered
+      - traefik.http.routers.portainer.service=node-red
       - traefik.http.routers.portainer.entrypoints=websecure
-      - traefik.http.routers.portainer.rule=Host(`nodered.$BASE_DOMAIN_NAME`)
+      - traefik.http.routers.portainer.rule=Host(`node-red.$BASE_DOMAIN_NAME`)
       - traefik.http.routers.portainer.tls=true
       - traefik.http.routers.portainer.tls.certresolver=cloudflare
     networks:
       - frontend
     user: $USER
-    ports:
-      - "1880:1880"
+    # ports:
+      # - "1880:1880"
     volumes:
       - $BASE_PATH/nodered/data:/data
