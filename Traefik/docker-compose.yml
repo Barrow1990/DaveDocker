@@ -11,8 +11,8 @@ services:
       # <--
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
-      - ${BASE_PATH}/config/:/etc/traefik/:ro
-      - ${BASE_PATH}/certs/:/var/traefik/certs/:rw
+      - ${BASE_PATH}/Traefik/config/:/etc/traefik/:ro
+      - ${BASE_PATH}/Traefik/certs/:/var/traefik/certs/:rw
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     networks:
