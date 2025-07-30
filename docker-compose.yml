@@ -1,4 +1,4 @@
 include:
-  - ./Traefik/docker-compose.yml
-  - ./Portainer/docker-compose.yml
-  - ./Node-Red/docker-compose.yml
+  - ./traefik/docker-compose.yml
+  - ./portainer/docker-compose.yml
+  - ./nodered/docker-compose.yml
