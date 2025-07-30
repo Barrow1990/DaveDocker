@@ -1,0 +1,24 @@
+# Ignore Docker-related files
+.env
+*.env
+*.log
+docker-compose.override.yml
+
+# Ignore volumes, build artifacts, and temporary files
+**/node_modules
+**/__pycache__/
+**/*.pyc
+tmp/
+build/
+dist/
+
+# Ignore Docker named volumes if they appear in local directories
+volumes/
+**/data
+
+# Optional: ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore VSCode Defaults
+.vscode
