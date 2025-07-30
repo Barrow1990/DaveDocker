@@ -1,10 +1,19 @@
-name: node-red
 services:
   node-red:
     container_name: node-red
     image: nodered/node-red:latest
     environment:
       - TZ=Europe/London
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.portainer.loadbalancer.server.port=1880
+      - traefik.http.routers.portainer.service=nodered
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.rule=Host(`nodered.$BASE_DOMAIN_NAME`)
+      - traefik.http.routers.portainer.tls=true
+      - traefik.http.routers.portainer.tls.certresolver=cloudflare
+    networks:
+      - frontend
     user: $USER
     ports:
       - "1880:1880"
