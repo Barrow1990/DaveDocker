@@ -1,9 +1,23 @@
 name: Portainer
 services:
   portainer-ce:
-    ports:
-      - 8000:8000
-      - 9443:9443
+      # --> (Optional) Remove when using traefik...
+      # - 9000:9000
+      # - 9443:9443
+      # <--
+      # - 8000:8000
+    # --> (Optional) When using traefik...
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - traefik.http.routers.portainer.service=portainer
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.rule=Host(`portainer.$BASE_DOMAIN_NAME`)
+      - traefik.http.routers.portainer.tls=true
+      - traefik.http.routers.portainer.tls.certresolver=cloudflare
+    # <--
+    networks:
+      - frontend
     container_name: portainer
     restart: always
     volumes:
