@@ -11,10 +11,43 @@ services:
       # <--
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
-      - ${BASE_PATH}/Traefik/config/:/etc/traefik/:ro
-      - ${BASE_PATH}/Traefik/certs/:/var/traefik/certs/:rw
+      - ${BASE_PATH}/traefik/config/:/etc/traefik/:ro
+      - ${BASE_PATH}/traefik/certs/:/var/traefik/certs/:rw
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
+    labels:
+      # Set up Metrics
+      - traefik.http.routers.metrics-http.entrypoints=web
+      - traefik.http.routers.metrics-http.middlewares=traefik-auth,globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.metrics-http.priority=20
+      - traefik.http.routers.metrics-http.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
+      - traefik.http.routers.metrics-http.service=prometheus@internal
+      - traefik.http.routers.metrics.entrypoints=websecure
+      - traefik.http.routers.metrics.middlewares=traefik-auth,globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.metrics.priority=20
+      - traefik.http.routers.metrics.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
+      - traefik.http.routers.metrics.service=prometheus@internal
+      - traefik.http.routers.metrics.tls=true
+      - traefik.http.routers.metrics.tls.options=securetls@file
+      # Set up for Dashboard
+      - traefik.http.routers.traefik-http.entrypoints=web
+      - traefik.http.routers.traefik-http.middlewares=globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.traefik-http.priority=20
+      - traefik.http.routers.traefik-http.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
+      - traefik.http.routers.traefik-internal.entrypoints=internal
+      - traefik.http.routers.traefik-internal.rule=Host(`traefik`)
+      - traefik.http.routers.traefik-internal.service=api@internal
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.middlewares=globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.traefik.priority=20
+      - traefik.http.routers.traefik.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=cfdns
+      - traefik.http.routers.traefik.tls.domains[0].main=${BASE_DOMAIN_NAME}
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.${BASE_DOMAIN_NAME}
+      - traefik.http.routers.traefik.tls.options=securetls@file
     networks:
       - frontend
     restart: unless-stopped
