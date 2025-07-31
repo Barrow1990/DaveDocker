@@ -50,7 +50,11 @@ services:
       - --providers.file.directory=/dynamic_conf/
       - --providers.file.watch=true
     healthcheck:
-      test: ['CMD', 'traefik', 'healthcheck', '--ping']
+      test: ["CMD-SHELL", "wget --spider --quiet http://127.0.0.1:80/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       # Set up Metrics
       - traefik.http.routers.metrics-http.entrypoints=web
