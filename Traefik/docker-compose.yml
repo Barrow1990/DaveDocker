@@ -11,8 +11,7 @@ services:
       # <--
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
-      - ${BASE_PATH}/traefik/config/:/etc/traefik/:ro
-      - ${BASE_PATH}/traefik/certs/:/var/traefik/certs/:rw
+      - ${BASE_PATH}/traefik:/var/traefik:rw
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
@@ -21,13 +20,27 @@ services:
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=frontend
       - --providers.docker=true
-      # - --providers.file.directory=/etc/traefik
-      # - --providers.file.watch=true
+      - --providers.file.directory=/etc/traefik
+      - --providers.file.watch=true
       # Entrypoints
+      - --entrypoints.internal.address=:8080
       - --entrypoints.web.address=:80
+      - --entrypoints.web.forwardedheaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
+      - --entrypoints.web.proxyprotocol.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
+      - --entrypoints.web.transport.respondingTimeouts.readTimeout=600
+      - --entrypoints.web.transport.respondingTimeouts.writeTimeout=0
+      - --entrypoints.web.transport.respondingTimeouts.idleTimeout=180
+      - --entrypoints.web.http.maxheaderbytes=1048576
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.forwardedheaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
+      - --entrypoints.websecure.proxyprotocol.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
+      - --entrypoints.websecure.transport.respondingTimeouts.readTimeout=600
+      - --entrypoints.websecure.transport.respondingTimeouts.writeTimeout=0
+      - --entrypoints.websecure.transport.respondingTimeouts.idleTimeout=180
+      - --entrypoints.websecure.http.maxheaderbytes=1048576
+      - --entrypoints.websecure.http.tls.certResolver=cfdns
       # Lets Encrypt
       - --certificatesresolvers.cloudflare.acme.storage=/var/traefik/certs/cloudflare-acme.json
       - --certificatesresolvers.cloudflare.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
@@ -36,19 +49,31 @@ services:
       # HTTP/3
       - --entrypoints.websecure.http3
       # Logs
-      - '--accesslog.filepath=${BASE_PATH}/treafik/logs/access.log'
+      - '--accesslog.filepath=/etc/treafik/logs/access.log'
       - '--accesslog.format=json'
-      - '--log.filepath=${BASE_PATH}/treafik/logs/traefik.log'
+      - --accesslog=True
+      - --accesslog.fields.names.StartUTC=drop
+      - --accesslog.fields.headers.names.User-Agent=keep
+      - --accesslog.fields.headers.names.Content-Type=keep
+      - --accesslog.bufferingsize=100
+      - '--log.filepath=/etc/treafik/logs/traefik.log'
+      - --log.maxsize=10
+      - --log.maxbackups=3
+      - --log.maxage=3
+      - --log.compress=true
+      - --log.nocolor=true
       - '--log.format=json'
       - '--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}'
-      - '--metrics.prometheus.addrouterslabels'
+      # Prometheus
+      - --metrics.prometheus=true
+      - --metrics.prometheus.addentrypointslabels=true
+      - --metrics.prometheus.addrouterslabels=true
+      - --metrics.prometheus.addserviceslabels=true
+      - --metrics.prometheus.manualrouting=true
       # Misc
       - --global.checknewversion=false
       - --global.sendanonymoususage=false
       - --api.dashboard=true
-      - --api.insecure=false
-      - --providers.file.directory=/dynamic_conf/
-      - --providers.file.watch=true
     labels:
       # Set up Metrics
       - traefik.http.routers.metrics-http.entrypoints=web
