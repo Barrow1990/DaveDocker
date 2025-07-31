@@ -42,8 +42,8 @@ services:
       - traefik.http.routers.authentik.tls=true
       - traefik.http.routers.authentik.tls.certresolver=cloudflare
     volumes:
-      - ${BASE_PATH}/authentik/server/media:/media
-      - ${BASE_PATH}/authentik/server/custom-templates:/templates
+      - ${BASE_PATH}/authentik/media:/media
+      - ${BASE_PATH}/authentik/custom-templates:/templates
     depends_on:
       - postgres
       - redis
@@ -79,9 +79,9 @@ services:
     user: root
     volumes:
       - /run/docker.sock:/run/docker.sock
-      - ${BASE_PATH}/authentik/worker/media:/media
-      - ${BASE_PATH}/authentik/worker/certs:/certs
-      - ${BASE_PATH}/authentik/worker/custom-templates:/templates
+      - ${BASE_PATH}/authentik/media:/media
+      - ${BASE_PATH}/authentik/certs:/certs
+      - ${BASE_PATH}/authentik/custom-templates:/templates
     depends_on:
       - postgres
       - redis
@@ -98,7 +98,7 @@ services:
       retries: 5
       timeout: 3s
     volumes:
-      - ${BASE_PATH}/authentik/redis/data:/data
+      - ${BASE_PATH}/authentik/redis_data:/data
     restart: unless-stopped
 
   postgres:
@@ -120,5 +120,5 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - ${BASE_PATH}/authentik/postgres/data:/var/lib/postgresql/data
+      - ${BASE_PATH}/authentik/postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
