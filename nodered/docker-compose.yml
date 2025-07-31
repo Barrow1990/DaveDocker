@@ -20,5 +20,4 @@ services:
     volumes:
       - $BASE_PATH/nodered/data:/data
     depends_on:
-      traefik:
-        condition: service_healthy
+      - traefik
