@@ -16,6 +16,8 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
+    healthcheck:
+      test: ['CMD', 'traefik', 'healthcheck', '--ping']
     labels:
       # Set up Metrics
       - traefik.http.routers.metrics-http.entrypoints=web
