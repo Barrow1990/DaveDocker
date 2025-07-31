@@ -109,3 +109,5 @@ services:
     networks:
       - frontend
     restart: unless-stopped
+
+    # updated folder name
