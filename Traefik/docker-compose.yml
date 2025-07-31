@@ -16,6 +16,39 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
+    command:
+      # Provider
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=frontend
+      - --providers.file.directory=/etc/traefik
+      - --providers.file.watch=true
+      # Entrypoints
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      # Lets Encrypt
+      - --certificatesresolvers.cloudflare.acme.storage=/var/traefik/certs/cloudflare-acme.json
+      - --certificatesresolvers.cloudflare.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+      # HTTP/3
+      - --entrypoints.websecure.http3
+      # Logs
+      - '--accesslog.filepath=${BASE_PATH}/treafik/logs/access.log'
+      - '--accesslog.format=json'
+      - '--log.filepath=${BASE_PATH}/treafik/logs/traefik.log'
+      - '--log.format=json'
+      - '--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}'
+      - '--metrics.prometheus.addrouterslabels'
+      # Misc
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+      - --api.dashboard=true
+      - --api.insecure=false
+      - --ping
+      - --providers.file.directory=/dynamic_conf/
+      - --providers.file.watch=true
     healthcheck:
       test: ['CMD', 'traefik', 'healthcheck', '--ping']
     labels:
