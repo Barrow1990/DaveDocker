@@ -52,12 +52,12 @@ services:
     labels:
       # Set up Metrics
       - traefik.http.routers.metrics-http.entrypoints=web
-      - traefik.http.routers.metrics-http.middlewares=traefik-auth,globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.metrics-http.middlewares=traefik-auth,globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file,authentik@docker
       - traefik.http.routers.metrics-http.priority=20
       - traefik.http.routers.metrics-http.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
       - traefik.http.routers.metrics-http.service=prometheus@internal
       - traefik.http.routers.metrics.entrypoints=websecure
-      - traefik.http.routers.metrics.middlewares=traefik-auth,globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.metrics.middlewares=traefik-auth,globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file,authentik@docker
       - traefik.http.routers.metrics.priority=20
       - traefik.http.routers.metrics.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
       - traefik.http.routers.metrics.service=prometheus@internal
@@ -65,14 +65,14 @@ services:
       - traefik.http.routers.metrics.tls.options=securetls@file
       # Set up for Dashboard
       - traefik.http.routers.traefik-http.entrypoints=web
-      - traefik.http.routers.traefik-http.middlewares=globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.traefik-http.middlewares=globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file,authentik@docker
       - traefik.http.routers.traefik-http.priority=20
       - traefik.http.routers.traefik-http.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.traefik-internal.entrypoints=internal
       - traefik.http.routers.traefik-internal.rule=Host(`traefik`)
       - traefik.http.routers.traefik-internal.service=api@internal
       - traefik.http.routers.traefik.entrypoints=websecure
-      - traefik.http.routers.traefik.middlewares=globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file
+      - traefik.http.routers.traefik.middlewares=globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file,authentik@docker
       - traefik.http.routers.traefik.priority=20
       - traefik.http.routers.traefik.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.traefik.service=api@internal
