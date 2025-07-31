@@ -47,7 +47,9 @@ services:
     depends_on:
       - postgres
       - redis
-    restart: unless-stopped
+    restart: unless-stopped\
+    networks:
+      - frontend
 
   worker:
     image: ghcr.io/goauthentik/server:2025.6.3
@@ -86,6 +88,8 @@ services:
       - postgres
       - redis
     restart: unless-stopped
+    networks:
+      - frontend
 
   redis:
     image: docker.io/library/redis:8.0.3
@@ -100,6 +104,8 @@ services:
     volumes:
       - ${BASE_PATH}/authentik/redis_data:/data
     restart: unless-stopped
+    networks:
+      - frontend
 
   postgres:
     # (Optional) Add a PostgreSQL Database for Authentik
@@ -122,3 +128,5 @@ services:
     volumes:
       - ${BASE_PATH}/authentik/postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - frontend
