@@ -2,3 +2,12 @@ include:
   - ./traefik/docker-compose.yml
   - ./portainer/docker-compose.yml
   - ./nodered/docker-compose.yml
+
+services:
+  portainer:
+    depends_on:
+      - traefik
+  
+  nodered:
+    depends_on:
+      - traefik
