@@ -8,6 +8,6 @@ services:
     depends_on:
       - traefik
   
-  nodered:
+  node-red:
     depends_on:
       - traefik
