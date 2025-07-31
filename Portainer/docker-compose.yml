@@ -25,4 +25,5 @@ services:
       - $BASE_PATH/portainer/data:/data
     image: portainer/portainer-ce:lts
     depends_on:
-      - traefik
+      traefik:
+        condition: service_healthy
