@@ -51,7 +51,3 @@ services:
     networks:
       - frontend
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true 
