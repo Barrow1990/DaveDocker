@@ -1,5 +1,6 @@
 include:
   - ./traefik/docker-compose.yml
+  - ./authentik/docker-compose.yml
   - ./portainer/docker-compose.yml
   - ./nodered/docker-compose.yml
 
