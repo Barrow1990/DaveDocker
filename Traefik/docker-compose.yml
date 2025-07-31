@@ -20,8 +20,9 @@ services:
       # Provider
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=frontend
-      - --providers.file.directory=/etc/traefik
-      - --providers.file.watch=true
+      - --providers.docker=true
+      # - --providers.file.directory=/etc/traefik
+      # - --providers.file.watch=true
       # Entrypoints
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
