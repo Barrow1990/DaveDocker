@@ -6,12 +6,12 @@ services:
       - TZ=Europe/London
     labels:
       - traefik.enable=true
-      - traefik.http.services.portainer.loadbalancer.server.port=1880
-      - traefik.http.routers.portainer.service=node-red
-      - traefik.http.routers.portainer.entrypoints=websecure
-      - traefik.http.routers.portainer.rule=Host(`node-red.$BASE_DOMAIN_NAME`)
-      - traefik.http.routers.portainer.tls=true
-      - traefik.http.routers.portainer.tls.certresolver=cloudflare
+      - traefik.http.services.node-red.loadbalancer.server.port=1880
+      - traefik.http.routers.node-red.service=node-red
+      - traefik.http.routers.node-red.entrypoints=websecure
+      - traefik.http.routers.node-red.rule=Host(`node-red.$BASE_DOMAIN_NAME`)
+      - traefik.http.routers.node-red.tls=true
+      - traefik.http.routers.node-red.tls.certresolver=cloudflare
     networks:
       - frontend
     user: $USER
