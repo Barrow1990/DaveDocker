@@ -3,11 +3,6 @@ include:
   - ./portainer/docker-compose.yml
   - ./nodered/docker-compose.yml
 
-services:
-  portainer:
-    depends_on:
-      - traefik
-  
-  node-red:
-    depends_on:
-      - traefik
+networks:
+  frontend:
+    external: true
