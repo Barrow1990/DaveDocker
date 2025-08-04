@@ -14,7 +14,7 @@ services:
       - traefik.http.routers.portainer.entrypoints=websecure
       - traefik.http.routers.portainer.rule=Host(`portainer.$BASE_DOMAIN_NAME`)
       - traefik.http.routers.portainer.tls=true
-      - traefik.http.routers.portainer.tls.certresolver=cloudflare
+      - traefik.http.routers.portainer.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
     # <--
     networks:
       - frontend

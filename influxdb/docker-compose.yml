@@ -40,7 +40,7 @@ services:
       - traefik.http.routers.influxdb.entrypoints=websecure
       - traefik.http.routers.influxdb.rule=Host(`influxdb.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.influxdb.tls=true
-      - traefik.http.routers.influxdb.tls.certresolver=cfdns
+      - traefik.http.routers.influxdb.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
       - traefik.http.routers.influxdb.service=influxdb
       - traefik.http.services.influxdb.loadbalancer.server.port=8086
       - traefik.http.services.influxdb.loadbalancer.server.scheme=http
