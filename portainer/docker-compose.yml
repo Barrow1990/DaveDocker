@@ -26,3 +26,6 @@ services:
     image: portainer/portainer-ce:lts
     depends_on:
       - traefik
+      - authentik-db
+      - authentik-server
+      - authentik-worker

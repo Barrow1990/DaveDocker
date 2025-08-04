@@ -21,3 +21,6 @@ services:
       - $BASE_PATH/nodered/data:/data
     depends_on:
       - traefik
+      - authentik-db
+      - authentik-server
+      - authentik-worker
