@@ -21,6 +21,3 @@ services:
       - $BASE_PATH/nodered/data:/data
     depends_on:
       - traefik
-      - db
-      - server
-      - worker

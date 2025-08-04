@@ -50,7 +50,4 @@ services:
       - frontend
     depends_on:
       - traefik
-      - db
-      - server
-      - worker
     restart: unless-stopped
