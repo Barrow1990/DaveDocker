@@ -70,7 +70,7 @@ services:
       - traefik.http.routers.metrics.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
       - traefik.http.routers.metrics.service=prometheus@internal
       - traefik.http.routers.metrics.tls=true
-      - traefik.http.routers.metrics.tls.certresolver=cloudflare
+      - traefik.http.routers.metrics.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
       - traefik.http.routers.metrics.tls.options=securetls@file
       - traefik.http.routers.metrics.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
 
@@ -79,7 +79,7 @@ services:
       - traefik.http.routers.traefik.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.tls=true
-      - traefik.http.routers.traefik.tls.certresolver=cloudflare
+      - traefik.http.routers.traefik.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
       - traefik.http.routers.traefik.tls.options=securetls@file
       - traefik.http.routers.traefik.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
 
