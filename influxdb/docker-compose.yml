@@ -50,4 +50,7 @@ services:
       - frontend
     depends_on:
       - traefik
+      - authentik-db
+      - authentik-server
+      - authentik-worker
     restart: unless-stopped
