@@ -28,11 +28,11 @@ services:
     labels:
       - traefik.enable=TRUE
       # HTTP
-      - traefik.http.routers.influxdb-http.entrypoints=web
-      - traefik.http.routers.influxdb-http.middlewares=globalHeaders@file,redirect-to-https@docker,robotHeaders@file,authentik@docker
-      - traefik.http.routers.influxdb-http.priority=20
-      - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${BASE_DOMAIN_NAME}`)
-      - traefik.http.routers.influxdb-http.service=influxdb-http
+      # - traefik.http.routers.influxdb-http.entrypoints=web
+      # - traefik.http.routers.influxdb-http.middlewares=globalHeaders@file,redirect-to-https@docker,robotHeaders@file,authentik@docker
+      # - traefik.http.routers.influxdb-http.priority=20
+      # - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${BASE_DOMAIN_NAME}`)
+      # - traefik.http.routers.influxdb-http.service=influxdb-http
       # HTTPS
       - traefik.http.routers.influxdb-https.tls=true
       - traefik.http.routers.influxdb-https.entrypoints=websecure
@@ -43,7 +43,7 @@ services:
       - traefik.http.routers.influxdb-https.tls.certresolver=cfdns
       - traefik.http.routers.influxdb-https.tls.options=securetls@file
       # Loadbalancer
-      - traefik.http.services.influxdb-http.loadbalancer.server.port=8086
+      # - traefik.http.services.influxdb-http.loadbalancer.server.port=8086
       - traefik.http.services.influxdb-https.loadbalancer.server.port=8086
     # (Optional) when using custom network
     networks:
