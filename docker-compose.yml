@@ -1,8 +1,9 @@
 include:
-  - ./traefik/docker-compose.yml
-  - ./authentik/docker-compose.yml
-  - ./portainer/docker-compose.yml
-  - ./nodered/docker-compose.yml
+  - ${BASE_PATH}/traefik/docker-compose.yml
+  - ${BASE_PATH}/authentik/docker-compose.yml
+  - ${BASE_PATH}/portainer/docker-compose.yml
+  - ${BASE_PATH}/nodered/docker-compose.yml
+  - ${BASE_PATH}/influxdb/docker-compose.yml
 
 networks:
   frontend:
