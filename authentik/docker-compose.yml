@@ -1,6 +1,6 @@
 ---
 services:
-  server:
+  authentik-server:
     image: ghcr.io/goauthentik/server:2025.6.3
     container_name: authentik-server
     command: server
@@ -51,7 +51,7 @@ services:
     networks:
       - frontend
 
-  worker:
+  authentik-worker:
     image: ghcr.io/goauthentik/server:2025.6.3
     container_name: authentik-worker
     command: worker
@@ -91,7 +91,7 @@ services:
     networks:
       - frontend
 
-  redis:
+  authentik-redis:
     image: docker.io/library/redis:8.0.3
     container_name: authentik-redis
     command: --save 60 1 --loglevel warning
@@ -107,7 +107,7 @@ services:
     networks:
       - frontend
 
-  postgres:
+  authentik-db:
     # (Optional) Add a PostgreSQL Database for Authentik
     #   Alternatively, you can host your PostgreSQL database externally, and
     #   change the connection settings in the `authentik-server` and
