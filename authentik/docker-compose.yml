@@ -45,8 +45,8 @@ services:
       - ${BASE_PATH}/authentik/media:/media
       - ${BASE_PATH}/authentik/custom-templates:/templates
     depends_on:
-      - postgres
-      - redis
+      - authentik-postgres
+      - authentik-redis
     restart: unless-stopped
     networks:
       - frontend
@@ -85,8 +85,8 @@ services:
       - ${BASE_PATH}/authentik/certs:/certs
       - ${BASE_PATH}/authentik/custom-templates:/templates
     depends_on:
-      - postgres
-      - redis
+      - authentik-postgres
+      - authentik-redis
     restart: unless-stopped
     networks:
       - frontend
