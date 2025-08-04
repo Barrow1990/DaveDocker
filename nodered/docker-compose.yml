@@ -11,7 +11,7 @@ services:
       - traefik.http.routers.node-red.entrypoints=websecure
       - traefik.http.routers.node-red.rule=Host(`node-red.$BASE_DOMAIN_NAME`)
       - traefik.http.routers.node-red.tls=true
-      - traefik.http.routers.node-red.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+      - traefik.http.routers.node-red.tls.certresolver=cloudflare
       - traefik.http.routers.node-red.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
 
     networks:

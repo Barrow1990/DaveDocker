@@ -40,7 +40,7 @@ services:
       - traefik.http.routers.authentik.entrypoints=websecure
       - traefik.http.routers.authentik.rule=Host(`auth.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.authentik.tls=true
-      - traefik.http.routers.authentik.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+      - traefik.http.routers.authentik.tls.certresolver=cloudflare
     volumes:
       - ${BASE_PATH}/authentik/media:/media
       - ${BASE_PATH}/authentik/custom-templates:/templates
