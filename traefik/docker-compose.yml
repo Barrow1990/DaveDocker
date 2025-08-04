@@ -6,7 +6,7 @@ services:
       - 443:443
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
-      - ${BASE_PATH}/traefik:/etc/traefik:rw
+      - ${BASE_PATH}/traefik/config:/etc/traefik:rw
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
@@ -42,9 +42,6 @@ services:
 
     labels:
       - traefik.enable=true
-
-      # 🔐 Basic Auth Middleware
-      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/auth
 
       # 🛡️ Secure Headers Middleware
       - traefik.http.middlewares.secureHeaders.headers.frameDeny=true
