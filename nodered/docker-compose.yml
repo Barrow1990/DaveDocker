@@ -19,5 +19,3 @@ services:
       # - "1880:1880"
     volumes:
       - $BASE_PATH/nodered/data:/data
-    depends_on:
-      - traefik

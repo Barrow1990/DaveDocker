@@ -48,6 +48,4 @@ services:
     # (Optional) when using custom network
     networks:
       - frontend
-    depends_on:
-      - traefik
     restart: unless-stopped
