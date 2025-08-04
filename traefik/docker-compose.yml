@@ -72,7 +72,8 @@ services:
       - traefik.http.routers.metrics.tls=true
       - traefik.http.routers.metrics.tls.certresolver=cloudflare
       - traefik.http.routers.metrics.tls.options=securetls@file
-      - traefik.http.routers.metrics.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
+      - *traefik-middleware
+      # - traefik.http.routers.metrics.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
 
       # 📋 Dashboard Router (HTTPS only)
       - traefik.http.routers.traefik.entrypoints=websecure

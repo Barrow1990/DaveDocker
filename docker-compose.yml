@@ -1,3 +1,6 @@
+x-traefik-middleware: &traefik-middleware
+  - traefik.http.routers.myapp.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
+
 include:
   - ${BASE_PATH}/traefik/docker-compose.yml
   - ${BASE_PATH}/authentik/docker-compose.yml
