@@ -1,124 +1,86 @@
----
 services:
   traefik:
     image: docker.io/library/traefik:v3.5.0
     container_name: traefik
     ports:
-      - 80:80
       - 443:443
-      # --> (Optional) Enable Dashboard, don't do in production
-      # - 8080:8080
-      # <--
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
-      - ${BASE_PATH}/traefik:/var/traefik:rw
+      - ${BASE_PATH}/traefik:/etc/traefik:rw
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - CF_DNS_API_EMAIL=${CLOUDFLARE_EMAIL_ADDRESS}
     command:
-      # Provider
+      # Providers
+      - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=frontend
-      - --providers.docker=true
       - --providers.file.directory=/etc/traefik
       - --providers.file.watch=true
+
       # Entrypoints
-      - --entrypoints.internal.address=:8080
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.forwardedheaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
-      - --entrypoints.web.proxyprotocol.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
-      - --entrypoints.web.transport.respondingTimeouts.readTimeout=600
-      - --entrypoints.web.transport.respondingTimeouts.writeTimeout=0
-      - --entrypoints.web.transport.respondingTimeouts.idleTimeout=180
-      - --entrypoints.web.http.maxheaderbytes=1048576
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.websecure.address=:443
-      - --entrypoints.websecure.forwardedheaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
-      - --entrypoints.websecure.proxyprotocol.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
-      - --entrypoints.websecure.transport.respondingTimeouts.readTimeout=600
-      - --entrypoints.websecure.transport.respondingTimeouts.writeTimeout=0
-      - --entrypoints.websecure.transport.respondingTimeouts.idleTimeout=180
-      - --entrypoints.websecure.http.maxheaderbytes=1048576
-      - --entrypoints.websecure.http.tls.certResolver=cfdns
-      # Lets Encrypt
-      - --certificatesresolvers.cloudflare.acme.storage=/var/traefik/certs/cloudflare-acme.json
+      - --entrypoints.websecure.http.tls.certresolver=cloudflare
+      - --entrypoints.websecure.http.tls.options=securetls@file
+
+      # Certificates
+      - --certificatesresolvers.cloudflare.acme.storage=/etc/traefik/certs/cloudflare-acme.json
       - --certificatesresolvers.cloudflare.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
-      # HTTP/3
-      - --entrypoints.websecure.http3
-      # Logs
-      - '--accesslog.filepath=/etc/treafik/logs/access.log'
-      - '--accesslog.format=json'
-      - --accesslog=True
-      - --accesslog.fields.names.StartUTC=drop
-      - --accesslog.fields.headers.names.User-Agent=keep
-      - --accesslog.fields.headers.names.Content-Type=keep
-      - --accesslog.bufferingsize=100
-      - '--log.filepath=/etc/treafik/logs/traefik.log'
-      - --log.maxsize=10
-      - --log.maxbackups=3
-      - --log.maxage=3
-      - --log.compress=true
-      - --log.nocolor=true
-      - '--log.format=json'
-      - '--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}'
-      # Prometheus
-      - --metrics.prometheus=true
-      - --metrics.prometheus.addentrypointslabels=true
-      - --metrics.prometheus.addrouterslabels=true
-      - --metrics.prometheus.addserviceslabels=true
-      - --metrics.prometheus.manualrouting=true
-      # Misc
-      - --global.checknewversion=false
-      - --global.sendanonymoususage=false
+
+      # Dashboard
       - --api.dashboard=true
+
+      # Metrics
+      - --metrics.prometheus=true
+      - --metrics.prometheus.manualrouting=true
+
+      # Logging
+      - --log.level=ERROR
+      - --accesslog=true
+
     labels:
-      - traefik.enable=TRUE
-      # Authentik Middleware
-      - traefik.http.middlewares.authentik.forwardauth.address=http://authentik:9000/outpost.goauthentik.io/auth/traefik
-      - traefik.http.middlewares.authentik.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
-      - traefik.http.middlewares.authentik.forwardauth.trustForwardHeader=TRUE
-      # Misc
-      - traefik.http.middlewares.autodetect.contenttype=TRUE
-      - traefik.http.middlewares.cloudflarewarp.plugin.cloudflarewarp.disableDefault=FALSE
-      - traefik.http.middlewares.gzip.compress=TRUE
-      # Redirect HTTP to HTTPS
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=TRUE
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.enable=true
+
+      # 🔐 Basic Auth Middleware
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/auth
-      # Metrics Config
-      - traefik.http.routers.metrics-http.entrypoints=web
-      - traefik.http.routers.metrics-http.middlewares=traefik-auth,globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file
-      - traefik.http.routers.metrics-http.priority=20
-      - traefik.http.routers.metrics-http.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
-      - traefik.http.routers.metrics-http.service=prometheus@internal
+
+      # 🛡️ Secure Headers Middleware
+      - traefik.http.middlewares.secureHeaders.headers.frameDeny=true
+      - traefik.http.middlewares.secureHeaders.headers.sslRedirect=true
+      - traefik.http.middlewares.secureHeaders.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.secureHeaders.headers.browserXssFilter=true
+      - traefik.http.middlewares.secureHeaders.headers.referrerPolicy=no-referrer-when-downgrade
+      - traefik.http.middlewares.secureHeaders.headers.permissionsPolicy=geolocation=(), microphone=()
+      - traefik.http.middlewares.secureHeaders.headers.stsSeconds=31536000
+      - traefik.http.middlewares.secureHeaders.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.secureHeaders.headers.stsPreload=true
+
+      # 🤖 Robot Headers Middleware
+      - traefik.http.middlewares.robotHeaders.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow
+
+      # 🧠 Content-Type Detection Middleware
+      - traefik.http.middlewares.autodetect.contenttype=true
+
+      # 📊 Metrics Router (HTTPS only)
       - traefik.http.routers.metrics.entrypoints=websecure
-      - traefik.http.routers.metrics.middlewares=traefik-auth,globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file
-      - traefik.http.routers.metrics.priority=20
       - traefik.http.routers.metrics.rule=Host(`metrics.${BASE_DOMAIN_NAME}`) && Path(`/prometheus`)
       - traefik.http.routers.metrics.service=prometheus@internal
-      - traefik.http.routers.metrics.tls=TRUE
+      - traefik.http.routers.metrics.tls=true
+      - traefik.http.routers.metrics.tls.certresolver=cloudflare
       - traefik.http.routers.metrics.tls.options=securetls@file
-      # Dashboard Config
-      - traefik.http.routers.traefik-http.entrypoints=web
-      - traefik.http.routers.traefik-http.middlewares=globalHeaders@file,redirect-to-https@docker,autodetect@docker,robotHeaders@file,authentik@docker
-      - traefik.http.routers.traefik-http.priority=20
-      - traefik.http.routers.traefik-http.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
-      - traefik.http.routers.traefik-internal.entrypoints=internal
-      - traefik.http.routers.traefik-internal.rule=Host(`traefik`)
-      - traefik.http.routers.traefik-internal.service=api@internal
+      - traefik.http.routers.metrics.middlewares=traefik-auth,secureHeaders@docker,robotHeaders@docker,autodetect@docker
+
+      # 📋 Dashboard Router (HTTPS only)
       - traefik.http.routers.traefik.entrypoints=websecure
-      - traefik.http.routers.traefik.middlewares=globalHeaders@file,secureHeaders@file,autodetect@docker,robotHeaders@file,authentik@docker
-      - traefik.http.routers.traefik.priority=20
       - traefik.http.routers.traefik.rule=Host(`dash.${BASE_DOMAIN_NAME}`)
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.tls=TRUE
-      - traefik.http.routers.traefik.tls.certresolver=cfdns
-      - traefik.http.routers.traefik.tls.domains[0].main=${BASE_DOMAIN_NAME}
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.${BASE_DOMAIN_NAME}
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=cloudflare
       - traefik.http.routers.traefik.tls.options=securetls@file
+      - traefik.http.routers.traefik.middlewares=traefik-auth,secureHeaders@docker,robotHeaders@docker,autodetect@docker
+
     networks:
       - frontend
     restart: unless-stopped
