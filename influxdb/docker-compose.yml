@@ -7,8 +7,8 @@ services:
     # ports:
       # - '8086:8086'
     volumes:
-      - influxdb-data:/var/lib/influxdb2
-      - /etc/influxdb2:/etc/influxdb2
+      - ${BASE_PATH}/influxdb/data:/var/lib/influxdb2
+      - ${BASE_PATH}/influxdb/data2:/etc/influxdb2
       # (Optional) when using certificate
       # - /etc/ssl/cert.pem/:/etc/ssl/cert.pem  # (optional) if you're using self-signed certs
       # - /etc/ssl/cert-key.pem/:/etc/ssl/cert-key.pem  # (optional) if you're using self-signed certs
