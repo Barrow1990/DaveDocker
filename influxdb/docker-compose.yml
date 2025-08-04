@@ -28,13 +28,13 @@ services:
     labels:
       - traefik.enable=true
 
-      # HTTP router (optional, for redirect)
-      - traefik.http.routers.influxdb-http.entrypoints=web
-      - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${BASE_DOMAIN_NAME}`)
-      - traefik.http.routers.influxdb-http.middlewares=redirect-to-https@docker
-      - traefik.http.routers.influxdb-http.service=influxdb-http
-      - traefik.http.services.influxdb-http.loadbalancer.server.port=8086
-      - traefik.http.services.influxdb-http.loadbalancer.server.scheme=http
+      # # HTTP router (optional, for redirect)
+      # - traefik.http.routers.influxdb-http.entrypoints=web
+      # - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${BASE_DOMAIN_NAME}`)
+      # - traefik.http.routers.influxdb-http.middlewares=redirect-to-https@docker
+      # - traefik.http.routers.influxdb-http.service=influxdb-http
+      # - traefik.http.services.influxdb-http.loadbalancer.server.port=8086
+      # - traefik.http.services.influxdb-http.loadbalancer.server.scheme=http
 
       # HTTPS router
       - traefik.http.routers.influxdb.entrypoints=websecure
