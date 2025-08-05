@@ -45,6 +45,11 @@ services:
       - traefik.http.services.influxdb.loadbalancer.server.port=8086
       - traefik.http.services.influxdb.loadbalancer.server.scheme=http
 
+      # Router WITHOUT Authentik middleware for a specific path
+      - "traefik.http.routers.influxdb-public.rule=Host(`influxdb.$BASE_DOMAIN_NAME`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.influxdb-public.entrypoints=websecure"
+      - "traefik.http.routers.influxdb-public.service=influxdb"
+
     # (Optional) when using custom network
     networks:
       - frontend
