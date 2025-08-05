@@ -92,7 +92,7 @@ services:
       - frontend
 
   redis:
-    image: docker.io/library/redis:8.0.3
+    image: docker.io/library/redis:8.2.0
     container_name: authentik-redis
     command: --save 60 1 --loglevel warning
     healthcheck:
