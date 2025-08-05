@@ -14,6 +14,11 @@ services:
       - traefik.http.routers.node-red.tls.certresolver=cloudflare
       - traefik.http.routers.node-red.middlewares=secureHeaders@docker,robotHeaders@docker,autodetect@docker,authentik@docker
 
+      # Router WITHOUT Authentik middleware for a specific path
+      - "traefik.http.routers.node-red-public.rule=Host(`node-red.$BASE_DOMAIN_NAME`) && PathPrefix(`/mqtt`)"
+      - "traefik.http.routers.node-red-public.entrypoints=websecure"
+      - "traefik.http.routers.node-red-public.service=node-red"
+
     networks:
       - frontend
     user: $USER
