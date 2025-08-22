@@ -1,7 +1,7 @@
 ---
 services:
   server:
-    image: ghcr.io/goauthentik/server:2025.6.4
+    image: ghcr.io/goauthentik/server:2025.8.1
     container_name: authentik-server
     command: server
     environment:
@@ -52,7 +52,7 @@ services:
       - frontend
 
   worker:
-    image: ghcr.io/goauthentik/server:2025.6.4
+    image: ghcr.io/goauthentik/server:2025.8.1
     container_name: authentik-worker
     command: worker
     environment:
